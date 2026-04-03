@@ -8,5 +8,3 @@ settings = thren.get_single_settings()
 a = thren.calculate(settings, tau)
 
 thren.plot_traj(a, settings, tau, prec)
-
-thren.fig.savefig("fronde_deux_corps_amouginot.pdf")

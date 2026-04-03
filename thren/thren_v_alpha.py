@@ -78,7 +78,6 @@ def calculate(settings, timespan, method="RK23"):
 
 
 def plot_traj(solution, settings, timespan, precision):
-    fig, ax = plt.subplots()
 
     start, stop = timespan
     t = np.linspace(start, stop, precision)
@@ -97,16 +96,17 @@ def plot_traj(solution, settings, timespan, precision):
     R2x = (m/m2) * Rx
     R2y = (m/m2) * Ry
 
-    plt.plot(solution.y[0], solution.y[1])
-    plt.plot(R1x, R1y)
-    plt.plot(R2x, R2y)
+    fig, ax = plt.subplots()
+
+    ax.set_xlabel("y (m)")
+    ax.set_ylabel("x (m)")
+
+    plt.plot(solution.y[0], solution.y[1], label="satellite")
+    plt.plot(R1x, R1y, label="body 1")
+    plt.plot(R2x, R2y, label="body 2")
+
+    ax.legend()
+
     plt.show()
 
-
-tau = (0, 500000)
-prec = 10000
-
-settings = get_single_settings()
-a = calculate(settings, tau)
-
-plot_traj(a, settings, tau, prec)
+    fig.savefig("fronde_deux_corps_amouginot.pdf")
