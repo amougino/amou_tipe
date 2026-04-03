@@ -1,4 +1,0 @@
-\contentsline {section}{\numberline {1}Mécanique 1 - 1989}{1}{}%
-\contentsline {subsection}{\numberline {1.1}Chapitre 9 - Interaction deux particules}{1}{}%
-\contentsline {subsubsection}{\numberline {1.1.1}Calcul 1}{1}{}%
-\contentsline {subsubsection}{\numberline {1.1.2}Notes}{1}{}%
