@@ -66,7 +66,7 @@ def define_ode(settings):
     return ds
 
 
-def calculate(settings, timespan, method="RK23"):
+def calculate(settings, timespan, method="RK45"):
     initial = [
         settings["sat_pos"]["x"],
         settings["sat_pos"]["y"],
@@ -74,7 +74,7 @@ def calculate(settings, timespan, method="RK23"):
         settings["sat_vel"]["y"]
     ]
     ds = define_ode(settings)
-    return solve(fun=ds, t_span=timespan, y0=initial, method=method)
+    return solve(fun=ds, t_span=timespan, y0=initial, method=method, rtol=1e-8, atol=1e-8)
 
 
 def plot_traj(solution, settings, timespan, precision):
