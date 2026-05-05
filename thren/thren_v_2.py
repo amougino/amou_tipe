@@ -4,8 +4,6 @@ THREAD THE NEEDLE
 
 Trajectory maneuver
 
-Outdated file
-
 '''
 
 import os
@@ -33,7 +31,7 @@ def get_single_settings(file=os.path.join(__location__, "settings_single.json"))
 
 def parameters(m1, m2, r):
     m = (m1 * m2) / (m1 + m2)
-    omega = (2/r) * np.sqrt((2*G*m)/r)
+    omega = (2/r) * np.sqrt((G*m)/r)
     return (
         m,
         omega
