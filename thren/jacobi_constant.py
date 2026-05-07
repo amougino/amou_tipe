@@ -27,15 +27,27 @@ v_sat = thren.pyth(vx_sat, vy_sat)
 
 t = np.array(a.t)
 
+m1 = settings["mass1"]
+m2 = settings["mass2"]
+r = settings["body_distance"]
+
+m, omega = thren.parameters(m1, m2, r)
+
 R1x, R1y, R2x, R2y = thren.body_positions(settings, t)
 
 d1 = thren.pyth(x_sat - R1x, y_sat - R1y)
 d2 = thren.pyth(x_sat - R2x, y_sat - R2y)
 
-print(min(d1), min(d2))
+x_syn, y_syn = thren.to_synodique(x_sat, y_sat, omega*t)
+x_vel_syn, y_vel_syn = thren.to_synodique_vel(vx_sat, vy_sat, omega, t, x_sat, y_sat)
 
-e = (0.5*(v_sat**2)) - ((thren.G*settings["mass1"])/d1) - ((thren.G*settings["mass2"])/d2)
+# mu1 = (m/m1) * r ##### testing different mu #####
+# mu2 = (m/m2) * r ##### testing different mu #####
+mu1 = thren.G * settings["mass1"]
+mu2 = thren.G * settings["mass2"]
+
+C = ((omega**2)*(x_syn**2 + y_syn**2)) + (2*((mu1/d1) + (mu2/d2))) - (x_vel_syn**2 + y_vel_syn**2)
 
 fig, ax = plt.subplots()
-ax.plot(t, e)
+ax.plot(t, C)
 plt.show()

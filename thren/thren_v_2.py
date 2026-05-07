@@ -31,11 +31,18 @@ def get_single_settings(file=os.path.join(__location__, "settings_single.json"))
 
 def parameters(m1, m2, r):
     m = (m1 * m2) / (m1 + m2)
-    omega = (2/r) * np.sqrt((G*m)/r)
+    # omega = (2/r) * np.sqrt((G*m)/r) ##### testing different omega #####
+    omega = np.sqrt(G * (m1 + m2) / r**3)
     return (
         m,
         omega
     )
+
+
+def end_time_approx(settings, factor=1.5):
+    dist_to_center = pyth(settings["sat_pos"]["x"], settings["sat_pos"]["y"])
+    velocity = pyth(settings["sat_vel"]["x"], settings["sat_vel"]["y"])
+    return (2*dist_to_center / velocity) * factor
 
 
 def to_bin_sys(settings):
@@ -58,6 +65,19 @@ def from_bin_sys(vx, vy, settings):
         vx + settings["bin_sys_vel"]["x"],
         vy + settings["bin_sys_vel"]["y"]
     )
+
+
+def to_synodique(x, y, theta):
+    x0 = x*np.cos(theta) + y*np.sin(theta)
+    y0 = - x*np.sin(theta) + y*np.cos(theta)
+    return x0, y0
+
+
+def to_synodique_vel(vel_x, vel_y, omega, t, x, y):
+    xp, yp = to_synodique(x, y, omega*t)
+    vx0 = vel_x*np.cos(omega*t) + vel_y*np.sin(omega*t) + omega*yp
+    vy0 = - vel_x*np.sin(omega*t) + vel_y*np.cos(omega*t) - omega*xp
+    return vx0, vy0
 
 
 def define_ode(settings):
@@ -102,20 +122,16 @@ def calculate(settings, timespan, method="RK45", time_values=None):
         vy
     ]
     ds = define_ode(settings)
-    return solve(fun=ds, t_span=timespan, y0=initial, method=method, rtol=1e-10, atol=1e-10, t_eval=time_values)
+    m1 = settings["mass1"]
+    m2 = settings["mass2"]
+    r = settings["body_distance"]
+    m, omega = parameters(m1, m2, r)
+    return solve(
+        fun=ds, t_span=timespan, y0=initial, method=method, rtol=1e-12, atol=1e-12, t_eval=time_values,
+        max_step=(2 * np.pi) / (1000*omega))
 
 
-def end_time_approx(settings, factor=1.5):
-    dist_to_center = pyth(settings["sat_pos"]["x"], settings["sat_pos"]["y"])
-    velocity = pyth(settings["sat_vel"]["x"], settings["sat_vel"]["y"])
-    return (2*dist_to_center / velocity) * factor
-
-
-def plot_traj(solution, settings, timespan, precision=10):
-
-    start, stop = timespan
-    t = np.linspace(start, stop, precision)
-
+def body_positions(settings, t):
     m1 = settings["mass1"]
     m2 = settings["mass2"]
     r = settings["body_distance"]
@@ -130,6 +146,16 @@ def plot_traj(solution, settings, timespan, precision=10):
     R2x = (m/m2) * Rx
     R2y = (m/m2) * Ry
 
+    return R1x, R1y, R2x, R2y
+
+
+def plot_traj(solution, settings, timespan, precision=10, save=False):
+
+    start, stop = timespan
+    t = np.linspace(start, stop, precision)
+
+    R1x, R1y, R2x, R2y = body_positions(settings, t)
+
     fig, ax = plt.subplots()
 
     ax.set_xlabel("y (m)")
@@ -143,7 +169,8 @@ def plot_traj(solution, settings, timespan, precision=10):
 
     plt.show()
 
-    fig.savefig("fronde_deux_corps_amouginot.pdf")
+    if save:
+        fig.savefig("fronde_deux_corps_amouginot.pdf")
 
 
 def animate_traj(solution, settings, size, time_values, simulation_time=1, trail_fraction=10):
@@ -179,13 +206,7 @@ def animate_traj(solution, settings, size, time_values, simulation_time=1, trail
 
         t = time_values[frame]
 
-        Rx = r*np.cos(omega*t)
-        Ry = r*np.sin(omega*t)
-
-        R1x = (-m/m1) * Rx
-        R1y = (-m/m1) * Ry
-        R2x = (m/m2) * Rx
-        R2y = (m/m2) * Ry
+        R1x, R1y, R2x, R2y = body_positions(settings, t)
 
         sat_data = np.stack([sat_x, sat_y]).T
         scat_sat.set_offsets(sat_data)
@@ -196,9 +217,9 @@ def animate_traj(solution, settings, size, time_values, simulation_time=1, trail
         trail_data = np.stack(trail).T
         scat_sat_trail.set_offsets(trail_data)
 
-        trail[0] += [sat_x, R1x, R2x]
-        trail[1] += [sat_y, R1y, R2y]
-        removed = max(0, len(trail[0]) - trail_length*3)
+        trail[0] += [sat_x]
+        trail[1] += [sat_y]
+        removed = max(0, len(trail[0]) - trail_length)
         trail[0] = trail[0][removed:]
         trail[1] = trail[1][removed:]
 
