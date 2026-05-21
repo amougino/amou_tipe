@@ -1,10 +1,9 @@
 '''
 
-w.i.p.
+Satellite energy
 
 '''
-
-import thren.sim as sim
+import sim as sim
 import numpy as np
 
 import matplotlib.pyplot as plt
