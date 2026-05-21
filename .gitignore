@@ -1,5 +1,7 @@
+thren/test.py
 __pycache__/
 tex/
 .vscode/
 .DS_Store
 *.pdf
+old/
