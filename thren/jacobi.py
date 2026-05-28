@@ -3,7 +3,7 @@
 Jacobi constant
 
 '''
-import sim as sim
+import sim
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -39,3 +39,8 @@ def jacobi(solution, settings):
     j = ((omega**2)*(x_syn**2 + y_syn**2)) + (2*((mu1/d1) + (mu2/d2))) - (x_vel_syn**2 + y_vel_syn**2)
 
     return j
+
+
+def jacobi_centered(solution, settings):
+    j = jacobi(solution, settings)
+    return j - j[0]
