@@ -6,11 +6,17 @@ Plotting of important values
 
 '''
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def annotate_axe(ax, i):
     ax.text(0.5, 0.5, "ax%d" % (i+1), va="center", ha="center")
     ax.tick_params(labelbottom=False, labelleft=False)
+
+
+def regularly_spaced(arr, n_of_elements):
+    out = arr[np.round(np.linspace(0, len(arr)-1, n_of_elements)).astype(int)]
+    return out
 
 
 def single(p1=[], p2=[], p3=[], p4=[], p5=[]):
@@ -28,9 +34,37 @@ def single(p1=[], p2=[], p3=[], p4=[], p5=[]):
     for i in range(5):
         if plots[i] != []:
             for j in range(len(plots[i])//3):
-                axes[i].plot(plots[i][3*j], plots[i][3*j + 1], label=plots[i][3*j + 2])
+                if j == 0:
+                    axes[i].plot(plots[i][3*j], plots[i][3*j + 1], label=plots[i][3*j + 2])
+                else:
+                    axes[i].scatter(
+                        regularly_spaced(plots[i][3*j], 8),
+                        regularly_spaced(plots[i][3*j + 1], 8),
+                        label=plots[i][3*j + 2]
+                    )
             axes[i].legend()
-            axes[i].yaxis.get_offset_text().set_position((-0.2, 0))
+
+            fig.canvas.draw()
+            offsetx = axes[i].xaxis.get_offset_text()
+            offsetx.set_visible(False)
+            txt_x = axes[i].text(
+                0.98, 0.02,
+                offsetx.get_text(),
+                transform=axes[i].transAxes,
+                ha='right',
+                va='bottom',
+                color='red'
+            )
+            offsety = axes[i].yaxis.get_offset_text()
+            offsety.set_visible(False)
+            txt_y = axes[i].text(
+                0.02, 0.98,
+                offsety.get_text(),
+                transform=axes[i].transAxes,
+                ha='left',
+                va='top',
+                color='red'
+            )
         else:
             annotate_axe(axes[i], i)
 
