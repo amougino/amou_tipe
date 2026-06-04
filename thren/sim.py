@@ -26,7 +26,7 @@ def pyth(a, b):
     return np.sqrt(a**2 + b**2)
 
 
-def get_single_settings(file=os.path.join(__location__, "settings_single.json")):
+def get_settings(file=os.path.join(__location__, "settings_single.json")):
     '''
     returns dict of json file
     '''
@@ -53,8 +53,8 @@ def end_time_approx(settings, factor=1.5):
     '''
     returns time needed to cross to the other side of the origin in an empty system, multiplied by a factor
     '''
-    dist_to_center = pyth(settings["sat_pos"]["x"], settings["sat_pos"]["y"])
-    velocity = pyth(settings["sat_vel"]["x"], settings["sat_vel"]["y"])
+    dist_to_center = pyth(settings["sat_pos_x"], settings["sat_pos_y"])
+    velocity = pyth(settings["sat_vel_x"], settings["sat_vel_y"])
     return (2*dist_to_center / velocity) * factor
 
 
@@ -63,8 +63,8 @@ def to_bin_sys(settings):
     gets satellite speed in the binary system's frame of reference, from the original frame of reference
     '''
     return (
-        settings["sat_vel"]["x"] - settings["bin_sys_vel"]["x"],
-        settings["sat_vel"]["y"] - settings["bin_sys_vel"]["y"]
+        settings["sat_vel_x"] - settings["bin_sys_vel_x"],
+        settings["sat_vel_y"] - settings["bin_sys_vel_y"]
     )
 
 
@@ -73,8 +73,8 @@ def from_bin_sys(vx, vy, settings):
     gets satellite speed in original frame of reference, from the binary system's frame of reference
     '''
     return (
-        vx + settings["bin_sys_vel"]["x"],
-        vy + settings["bin_sys_vel"]["y"]
+        vx + settings["bin_sys_vel_x"],
+        vy + settings["bin_sys_vel_y"]
     )
 
 
@@ -139,8 +139,8 @@ def calculate(settings, timespan, method="RK45", time_values=None):
     '''
     vx, vy = to_bin_sys(settings)
     initial = [
-        settings["sat_pos"]["x"],
-        settings["sat_pos"]["y"],
+        settings["sat_pos_x"],
+        settings["sat_pos_y"],
         vx,
         vy
     ]

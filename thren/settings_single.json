@@ -2,16 +2,10 @@
     "mass1": 7.34767309e22,
     "mass2": 7.34767309e22,
     "body_distance": 150000e3,
-    "sat_pos": {
-        "x": 0,
-        "y": -200000e4
-    },
-    "sat_vel": {
-        "x": 0,
-        "y": 360
-    },
-    "bin_sys_vel": {
-        "x": 0,
-        "y": 0
-    }
+    "sat_pos_x": 0,
+    "sat_pos_y" : -200000e4,
+    "sat_vel_x": 0,
+    "sat_vel_y" : 360,
+    "bin_sys_vel_x": 0,
+    "bin_sys_vel_y" : 0
 }
