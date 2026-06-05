@@ -6,3 +6,4 @@ tex/
 *.pdf
 old/
 thren/test.py
+thren/_sim_*

@@ -27,7 +27,6 @@ def multi(settings_file=os.path.join(sim.__location__, "settings_multi.json")):
 
 
 def _iterate(remaining, settings):
-    print(1, remaining)
     remaining_copy = copy.deepcopy(remaining)
     parameter = remaining_copy[0]
     remaining_copy.pop(0)

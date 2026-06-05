@@ -7,18 +7,21 @@ import os
 import numpy as np
 import sim
 import copy
+import json
+import pandas as pd
+
+import time
 
 
 def create_folder(path):
     try:
         os.mkdir(path)
-        print(f"Directory '{path}' created successfully.")
     except FileExistsError:
-        print(f"Directory '{path}' already exists.")
+        raise Exception(f"Directory '{path}' already exists.")
     except PermissionError:
-        print(f"Permission denied: Unable to create '{path}'.")
+        raise Exception(f"Permission denied: Unable to create '{path}'.")
     except Exception as e:
-        print(f"An error occurred: {e}")
+        raise Exception(f"An error occurred: {e}")
 
 
 def populate(settings_file):
@@ -44,36 +47,49 @@ def populate(settings_file):
         num = file.split("_sim_")
         if len(num) != 1:
             number = max(number, int(num[1]) + 1)
-    create_folder(directory + "/_sim_" + str(number))
-    print(files_in_dir)
+    result_directory = directory + "/_sim_" + str(number)
+    create_folder(result_directory)
 
     for parameter in multi_settings["constants"]:
         settings[parameter] = multi_settings["constants"][parameter]
 
-    print(settings)
-
-    # return _iterate(multi_settings["variations"], settings)
-populate(sim.__location__ + "/settings_multi.json")
+    _iterate_save(multi_settings["variations"], settings, result_directory)
 
 
-def _iterate(remaining, settings):
-    print(1, remaining)
+def _iterate_save(remaining, settings, location):
     remaining_copy = copy.deepcopy(remaining)
+
+    with open(location + "/settings.json", 'w') as f:
+        json.dump(settings, f, indent=4)
+
     parameter = remaining_copy[0]
     remaining_copy.pop(0)
     empty = len(remaining_copy) == 0
     start, stop, num = parameter["start"], parameter["stop"], parameter["points"]
     values = np.linspace(start, stop, num)
-    results = []
+
     if empty:
         for i in values:
+            start = time.time()
             settings[parameter["name"]] = i
             timespan = (0, sim.end_time_approx(settings))
             simulation = sim.calculate(settings, timespan)
-            results.append(simulation)
+            df = pd.DataFrame({
+                't': simulation.t,
+                'x': simulation.y[0],
+                'y': simulation.y[1],
+                'vx': simulation.y[2],
+                'vy': simulation.y[3],
+            })
+            df.to_csv(location + f"/{parameter["name"]}_{i}.csv", index=False)
+            print(time.time() - start, parameter["name"], i)
     else:
         for i in values:
+            print(parameter["name"], i)
             settings[parameter["name"]] = i
-            simulations = _iterate(remaining_copy, settings)
-            results.append(simulations)
-    return results
+            result_directory = location + f"/{parameter["name"]}_{i}"
+            create_folder(result_directory)
+            _iterate_save(remaining_copy, settings, result_directory)
+
+
+populate(sim.__location__ + "/settings_multi.json")
