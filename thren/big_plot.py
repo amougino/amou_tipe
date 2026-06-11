@@ -19,7 +19,7 @@ def regularly_spaced(arr, n_of_elements):
     return out
 
 
-def single(p1=[], p2=[], p3=[], p4=[], p5=[]):
+def take_five(p1=[], p2=[], p3=[], p4=[], p5=[]):
 
     fig = plt.figure(figsize=(9, 9))
     ax1 = plt.subplot2grid((5, 5), (0, 0), colspan=5)
@@ -51,9 +51,9 @@ def single(p1=[], p2=[], p3=[], p4=[], p5=[]):
                 0.98, 0.02,
                 offsetx.get_text(),
                 transform=axes[i].transAxes,
-                ha='right',
-                va='bottom',
-                color='red'
+                ha="right",
+                va="bottom",
+                color="red"
             )
             offsety = axes[i].yaxis.get_offset_text()
             offsety.set_visible(False)
@@ -61,9 +61,9 @@ def single(p1=[], p2=[], p3=[], p4=[], p5=[]):
                 0.02, 0.98,
                 offsety.get_text(),
                 transform=axes[i].transAxes,
-                ha='left',
-                va='top',
-                color='red'
+                ha="left",
+                va="top",
+                color="red"
             )
         else:
             annotate_axe(axes[i], i)
@@ -71,5 +71,5 @@ def single(p1=[], p2=[], p3=[], p4=[], p5=[]):
     plt.show()
 
 
-def multi():
+def three_little_birds():
     pass
