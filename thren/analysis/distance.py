@@ -13,14 +13,21 @@ def distance(solution):
 
 def same_d_reached(solution):
     d = distance(solution)
-    start_d = d[0]
-    if start_d > d[-1]:
-        raise Exception("start distance greater than final")
-    idx_same_d = len(d) - 1
-    while start_d < d[idx_same_d]:
-        idx_same_d -= 1
-    if idx_same_d == 0:
-        raise Exception("no final distance found")
+    end_idx = len(d) - 1
+    if d[0] > d[end_idx]:
+        start_d = d[end_idx]
+        idx_same_d = 0
+        while start_d < d[idx_same_d]:
+            idx_same_d += 1
+        if idx_same_d == end_idx:
+            raise Exception("no final distance found")
+    else:
+        start_d = d[0]
+        idx_same_d = len(d) - 1
+        while start_d < d[idx_same_d]:
+            idx_same_d -= 1
+        if idx_same_d == 0:
+            raise Exception("no final distance found")
     return idx_same_d
 
 

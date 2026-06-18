@@ -9,19 +9,9 @@ import sim
 import copy
 import json
 import pandas as pd
+from create_folder import create_folder
 
 import time
-
-
-def create_folder(path):
-    try:
-        os.mkdir(path)
-    except FileExistsError:
-        raise Exception(f"Directory '{path}' already exists.")
-    except PermissionError:
-        raise Exception(f"Permission denied: Unable to create '{path}'.")
-    except Exception as e:
-        raise Exception(f"An error occurred: {e}")
 
 
 def populate(settings_file):
@@ -40,7 +30,7 @@ def populate(settings_file):
         "bin_sys_vel_y": None
     }
 
-    directory = os.path.dirname(settings_file)
+    directory = os.path.dirname(settings_file) + "/results"
     files_in_dir = os.listdir(directory)
     number = 1
     for file in files_in_dir:

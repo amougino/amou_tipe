@@ -19,29 +19,28 @@ def regularly_spaced(arr, n_of_elements):
     return out
 
 
-def take_five(p1=[], p2=[], p3=[], p4=[], p5=[]):
-
-    fig = plt.figure(figsize=(9, 9))
-    ax1 = plt.subplot2grid((5, 5), (0, 0), colspan=5)
-    ax2 = plt.subplot2grid((5, 5), (1, 0), colspan=5)
-    ax3 = plt.subplot2grid((5, 5), (2, 2), rowspan=3, colspan=3)
-    ax4 = plt.subplot2grid((5, 5), (2, 0), rowspan=2, colspan=2)
-    ax5 = plt.subplot2grid((5, 5), (4, 0), colspan=2)
-
-    axes = [ax1, ax2, ax3, ax4, ax5]
-    plots = [p1, p2, p3, p4, p5]
-
-    for i in range(5):
+def magic_plotting(fig, axes, plots, scatter, extra_is_spaced=False):
+    n = len(axes)
+    for i in range(n):
         if plots[i] != []:
             for j in range(len(plots[i])//3):
-                if j == 0:
-                    axes[i].plot(plots[i][3*j], plots[i][3*j + 1], label=plots[i][3*j + 2])
+                if extra_is_spaced:
+                    if j == 0:
+                        if scatter:
+                            axes[i].scatter(plots[i][3*j], plots[i][3*j + 1], label=plots[i][3*j + 2], s=1)
+                        else:
+                            axes[i].plot(plots[i][3*j], plots[i][3*j + 1], label=plots[i][3*j + 2])
+                    else:
+                        axes[i].scatter(
+                            regularly_spaced(plots[i][3*j], 8),
+                            regularly_spaced(plots[i][3*j + 1], 8),
+                            label=plots[i][3*j + 2]
+                        )
                 else:
-                    axes[i].scatter(
-                        regularly_spaced(plots[i][3*j], 8),
-                        regularly_spaced(plots[i][3*j + 1], 8),
-                        label=plots[i][3*j + 2]
-                    )
+                    if scatter:
+                        axes[i].scatter(plots[i][3*j], plots[i][3*j + 1], label=plots[i][3*j + 2], s=1)
+                    else:
+                        axes[i].plot(plots[i][3*j], plots[i][3*j + 1], label=plots[i][3*j + 2])
             axes[i].legend()
 
             fig.canvas.draw()
@@ -71,5 +70,32 @@ def take_five(p1=[], p2=[], p3=[], p4=[], p5=[]):
     plt.show()
 
 
-def three_little_birds():
-    pass
+def take_five(p1=[], p2=[], p3=[], p4=[], p5=[], scatter=False):
+
+    fig = plt.figure(figsize=(9, 9))
+    ax1 = plt.subplot2grid((5, 5), (0, 0), colspan=5)
+    ax2 = plt.subplot2grid((5, 5), (1, 0), colspan=5)
+    ax3 = plt.subplot2grid((5, 5), (2, 2), rowspan=3, colspan=3)
+    ax4 = plt.subplot2grid((5, 5), (2, 0), rowspan=2, colspan=2)
+    ax5 = plt.subplot2grid((5, 5), (4, 0), colspan=2)
+
+    axes = [ax1, ax2, ax3, ax4, ax5]
+    plots = [p1, p2, p3, p4, p5]
+
+    magic_plotting(fig, axes, plots, scatter, extra_is_spaced=True)
+
+
+def three_little_birds(p1=[], p2=[], p3=[], x_label=None, scatter=False):
+
+    fig = plt.figure(figsize=(9, 9))
+    ax1 = plt.subplot2grid((3, 1), (0, 0), colspan=3)
+    ax2 = plt.subplot2grid((3, 1), (1, 0), colspan=3)
+    ax3 = plt.subplot2grid((3, 1), (2, 0), colspan=3)
+
+    axes = [ax1, ax2, ax3]
+    plots = [p1, p2, p3]
+
+    if x_label != None:
+        plt.xlabel(x_label)
+
+    magic_plotting(fig, axes, plots, scatter)

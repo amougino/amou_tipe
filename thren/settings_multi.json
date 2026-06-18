@@ -6,20 +6,15 @@
         "bin_sys_vel_x": 0,
         "bin_sys_vel_y": 0,
         "sat_pos_x": 0,
+        "sat_pos_y": -2.32e9,
         "sat_vel_x": 0
     },
     "variations": [
         {
-            "name": "sat_pos_y",
-            "start": -1e9,
-            "stop": -10e9,
-            "points": 10
-        },
-        {
             "name": "sat_vel_y",
-            "start": 200,
-            "stop": 400,
-            "points": 10
+            "start": 50,
+            "stop": 350,
+            "points": 800
         }
     ]
 

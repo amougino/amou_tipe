@@ -49,7 +49,7 @@ def parameters(m1, m2, r):
     )
 
 
-def end_time_approx(settings, factor=1.5):
+def end_time_approx(settings, factor=1.8):
     '''
     returns time needed to cross to the other side of the origin in an empty system, multiplied by a factor
     '''
@@ -194,6 +194,7 @@ def plot_traj(solution, settings, timespan, precision=10, save=False):
     plt.plot(R2x, R2y, label="body 2", c="green")
 
     ax.legend()
+    ax.axis('equal')
 
     plt.show()
 
@@ -201,7 +202,7 @@ def plot_traj(solution, settings, timespan, precision=10, save=False):
         fig.savefig("fronde_deux_corps_amouginot.pdf")
 
 
-def animate_traj(solution, settings, size, time_values, simulation_time=1, trail_fraction=10):
+def animate_traj(solution, settings, size, time_values, simulation_time=1, trail_fraction=10, save=False):
     '''
     animates trajectory of the bodies and of the satellite using the solved ode
     '''
@@ -258,4 +259,13 @@ def animate_traj(solution, settings, size, time_values, simulation_time=1, trail
     interval = (simulation_time / iterations) * 1000
 
     ani = animation.FuncAnimation(fig=fig, func=update, frames=iterations, interval=interval)
+
+    if save:
+        writer = animation.PillowWriter(
+            fps=30,
+            metadata=dict(artist='amougino'),
+            bitrate=1800
+        )
+        ani.save(__location__ + "/animation.gif", writer=writer)
+
     plt.show()
