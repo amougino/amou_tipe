@@ -12,9 +12,9 @@
     "variations": [
         {
             "name": "sat_vel_y",
-            "start": 50,
-            "stop": 350,
-            "points": 800
+            "start": 200,
+            "stop": 800,
+            "points": 1200
         }
     ]
 

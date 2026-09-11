@@ -19,7 +19,7 @@ def regularly_spaced(arr, n_of_elements):
     return out
 
 
-def magic_plotting(fig, axes, plots, scatter, extra_is_spaced=False):
+def _magic_plotting(fig, axes, plots, scatter, save, extra_is_spaced=False):
     n = len(axes)
     for i in range(n):
         if plots[i] != []:
@@ -69,8 +69,11 @@ def magic_plotting(fig, axes, plots, scatter, extra_is_spaced=False):
 
     plt.show()
 
+    if save:
+        fig.savefig("big_plot.png")
 
-def take_five(p1=[], p2=[], p3=[], p4=[], p5=[], scatter=False):
+
+def take_five(p1=[], p2=[], p3=[], p4=[], p5=[], scatter=False, save=False):
 
     fig = plt.figure(figsize=(9, 9))
     ax1 = plt.subplot2grid((5, 5), (0, 0), colspan=5)
@@ -82,10 +85,10 @@ def take_five(p1=[], p2=[], p3=[], p4=[], p5=[], scatter=False):
     axes = [ax1, ax2, ax3, ax4, ax5]
     plots = [p1, p2, p3, p4, p5]
 
-    magic_plotting(fig, axes, plots, scatter, extra_is_spaced=True)
+    _magic_plotting(fig, axes, plots, scatter, save, extra_is_spaced=True)
 
 
-def three_little_birds(p1=[], p2=[], p3=[], x_label=None, scatter=False):
+def three_little_birds(p1=[], p2=[], p3=[], x_label=None, scatter=False, save=False):
 
     fig = plt.figure(figsize=(9, 9))
     ax1 = plt.subplot2grid((3, 1), (0, 0), colspan=3)
@@ -98,4 +101,4 @@ def three_little_birds(p1=[], p2=[], p3=[], x_label=None, scatter=False):
     if x_label != None:
         plt.xlabel(x_label)
 
-    magic_plotting(fig, axes, plots, scatter)
+    _magic_plotting(fig, axes, plots, scatter, save)
