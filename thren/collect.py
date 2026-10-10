@@ -21,6 +21,13 @@ def otf_collect_single_l(folder, variation, constants_condition=[]):
     )
 
 
+def otf_collect_single_df(folder, variation, constants_condition=[]):
+    df = pd.read_csv(folder + "/data.csv")
+    for constant in constants_condition:
+        df = df[df[constant[0]] == constant[1]]
+    return df[variation], df["v"], df["e"], df["theta"], df["min_b1"], df["min_b2"]
+
+
 def otf_collect_multi_l(folder, variations):
     df = pd.read_csv(folder + "/data.csv")
     var_lists = [df[col].tolist() for col in variations]

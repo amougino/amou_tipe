@@ -13,17 +13,9 @@ import numpy as np
 from scipy.integrate import solve_ivp as solve
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+from formulae import *
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-
-G = 6.673 * 10**(-11)
-
-
-def pyth(a, b):
-    '''
-    returns the hypotenuse of a right angle triangle of sides a and b
-    '''
-    return np.sqrt(a**2 + b**2)
 
 
 def get_settings(file=os.path.join(__location__, "settings_single.json")):
@@ -34,28 +26,6 @@ def get_settings(file=os.path.join(__location__, "settings_single.json")):
     with open(file) as f:
         settings = json.load(f)
     return settings
-
-
-def parameters(m1, m2, r):
-    '''
-    returns parameters defining the movement of the two planets
-    '''
-    m = (m1 * m2) / (m1 + m2)
-    # omega = (2/r) * np.sqrt((G*m)/r) ##### testing different omega #####
-    omega = np.sqrt(G * (m1 + m2) / r**3)
-    return (
-        m,
-        omega
-    )
-
-
-def end_time_approx(settings, factor=1.8):
-    '''
-    returns time needed to cross to the other side of the origin in an empty system, multiplied by a factor
-    '''
-    dist_to_center = pyth(settings["sat_pos_x"], settings["sat_pos_y"])
-    velocity = pyth(settings["sat_vel_x"], settings["sat_vel_y"])
-    return (2*dist_to_center / velocity) * factor
 
 
 def to_bin_sys(settings):
@@ -97,43 +67,23 @@ def to_synodique_vel(vel_x, vel_y, omega, t, x, y):
     return vx0, vy0
 
 
-def define_ode(settings):
-    '''
-    defines ordinary differential equation to be solve
-    '''
-
-    m1 = settings["mass1"]
-    m2 = settings["mass2"]
-    r = settings["body_distance"]
-
+def collision_events(settings, radius=1e6):
+    m1, m2, r = settings["mass1"], settings["mass2"], settings["body_distance"]
     m, omega = parameters(m1, m2, r)
 
-    def ds(t, s):
-        x = s[0]
-        y = s[1]
-        vx = s[2]
-        vy = s[3]
-        bx = m*r*np.cos(omega*t)
-        by = m*r*np.sin(omega*t)
-        d1 = np.sqrt(
-            ((bx/m1) + x)**2 +
-            ((by/m1) + y)**2
-        )
-        d2 = np.sqrt(
-            ((bx/m2) - x)**2 +
-            ((by/m2) - y)**2
-        )
-        return [
-            vx,
-            vy,
-            G * ((-bx - m1*x) / (d1**3) + (bx - m2*x) / (d2**3)),
-            G * ((-by - m1*y) / (d1**3) + (by - m2*y) / (d2**3))
-        ]
+    def hit1(t, s):
+        return np.hypot(s[0] + (m/m1)*r*np.cos(omega*t),
+                        s[1] + (m/m1)*r*np.sin(omega*t)) - radius
 
-    return ds
+    def hit2(t, s):
+        return np.hypot(s[0] - (m/m2)*r*np.cos(omega*t),
+                        s[1] - (m/m2)*r*np.sin(omega*t)) - radius
+
+    hit1.terminal = hit2.terminal = True
+    return [hit1, hit2]
 
 
-def calculate(settings, timespan, method="RK45", time_values=None):
+def calculate(settings, timespan, method="DOP853", time_values=None):
     '''
     returns the solved ordinary differential equation
     '''
@@ -150,8 +100,14 @@ def calculate(settings, timespan, method="RK45", time_values=None):
     r = settings["body_distance"]
     m, omega = parameters(m1, m2, r)
     return solve(
-        fun=ds, t_span=timespan, y0=initial, method=method, rtol=1e-12, atol=1e-12, t_eval=time_values,
-        max_step=(2 * np.pi) / (1000*omega))
+        fun=ds,
+        t_span=timespan,
+        y0=initial,
+        method=method,
+        rtol=1e-12, atol=1e-12,
+        t_eval=time_values,
+        max_step=(2 * np.pi) / (1000*omega),
+        events=collision_events(settings, 1e6))
 
 
 def body_positions(settings, t):

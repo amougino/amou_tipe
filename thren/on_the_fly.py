@@ -12,6 +12,16 @@ import analysis.transfer as transfer
 import analysis.distance as distance
 import json
 
+'''
+IMPORTANT :
+Simulation about 200x longer than calculation,
+if anything needs speeding up its that
+
+Ex:
+sim 19.00558114051819 s
+calc 0.08505105972290039 s
+'''
+
 
 def on_the_fly(settings_file):
     multi_settings = sim.get_settings(settings_file)
@@ -52,11 +62,10 @@ def on_the_fly(settings_file):
     with open(result_file, 'w') as f:
         f.write(header)
         f.close()
+    _iterate_otf(result_file, multi_settings["variations"], settings)
 
-    _iterate(result_file, multi_settings["variations"], settings)
 
-
-def _iterate(file, remaining, settings, current=""):
+def _iterate_otf(file, remaining, settings, current=""):
     remaining_copy = copy.deepcopy(remaining)
     parameter = remaining_copy[0]
     remaining_copy.pop(0)
@@ -68,24 +77,23 @@ def _iterate(file, remaining, settings, current=""):
         lines = []
         for i in values:
             settings[parameter["name"]] = i
-            timespan = (0, sim.end_time_approx(settings))
-            simulation = sim.calculate(settings, timespan)
-            if simulation.status == -1:
-                to_add = f"{i},None,None,None,None,None\n"
-                line = to_add if current == "" else current + ',' + to_add
-                lines.append(line)
-            else:
+            try:
+                timespan = (0, sim.end_time_approx(settings))
+                simulation = sim.calculate(settings, timespan)
+                if simulation.status != 0:
+                    raise RuntimeError(simulation.message)
                 v = transfer.vel_transfer(simulation, settings)
                 e = transfer.energy_transfer(simulation, settings)
                 theta = transfer.Delta_theta(simulation)
                 min_b1, min_b2 = distance.min_b_dist(simulation, settings)
                 to_add = f"{i},{v},{e},{theta},{min_b1},{min_b2}\n"
-                line = to_add if current == "" else current + ',' + to_add
-                lines.append(line)
+            except Exception:
+                to_add = f"{i},None,None,None,None,None\n"
+            lines.append(to_add if current == "" else current + ',' + to_add)
         with open(file, 'a') as f:
             f.writelines(lines)
     else:
         for i in values:
             new_current = str(i) if current == "" else current + ',' + str(i)
             settings[parameter["name"]] = i
-            _iterate(file, remaining_copy, settings, new_current)
+            _iterate_otf(file, remaining_copy, settings, new_current)
