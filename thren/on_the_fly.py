@@ -8,8 +8,8 @@ import os
 import copy
 import numpy as np
 from create_folder import create_folder
-import analysis.transfer as transfer
-import analysis.distance as distance
+import sim_analysis.transfer as transfer
+import sim_analysis.distance as distance
 import json
 
 '''

@@ -1,4 +1,4 @@
-import sim
+import thren.sim as sim
 import numpy as np
 
 

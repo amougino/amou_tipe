@@ -3,16 +3,16 @@
 Parallel version of on_the_fly
 
 '''
-import sim
+import thren.sim as sim
 import os
 import itertools
 import json
 import time
 import numpy as np
 from multiprocessing import Pool, cpu_count
-from create_folder import create_folder
-import analysis.transfer as transfer
-import analysis.distance as distance
+from thren.create_folder import create_folder
+import thren.sim_analysis.transfer as transfer
+import thren.sim_analysis.distance as distance
 
 '''
 IMPORTANT :

@@ -1,7 +1,7 @@
 import numpy as np
-import analysis.velocity as velocity
-import analysis.sat_energy as sat_energy
-import analysis.distance as distance
+import thren.sim_analysis.velocity as velocity
+import thren.sim_analysis.sat_energy as sat_energy
+import thren.sim_analysis.distance as distance
 
 
 def vel_transfer(solution, settings):

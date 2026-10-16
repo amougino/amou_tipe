@@ -13,7 +13,7 @@ import numpy as np
 from scipy.integrate import solve_ivp as solve
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-from formulae import *
+from thren.formulae import *
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 

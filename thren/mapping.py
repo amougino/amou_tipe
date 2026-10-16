@@ -1,11 +1,10 @@
 import PIL.Image as Img
 import os
 import json
-import collect
-import formulae
+import thren.collect as collect
+import thren.formulae as formulae
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.colors import ListedColormap
 from matplotlib.lines import Line2D
 
 BRGBW = {  # Black Red Green Blue White
@@ -82,7 +81,7 @@ class Mapper:
             index=self.var1,
             columns=self.var2,
             values=self.quantity,
-            aggfunc="first",
+            aggfunc="first"
         )
 
         self.v1_set = table.index.tolist()
@@ -103,7 +102,7 @@ class Mapper:
             str(self.v1_set[-1]),
             self.var2,
             str(self.v2_set[0]),
-            str(self.v2_set[-1]),
+            str(self.v2_set[-1])
         ]) + ".png"
 
     def to_png(self, color_map=BRGBW, save_folder=None):
@@ -131,9 +130,9 @@ class Mapper:
         im = ax.imshow(
             self.data.T,
             cmap=color_map,
-            origin="lower",                 # first value at the bottom
+            origin="lower",
             extent=[x0, x1, y0, y1],
-            aspect="auto",                  # your axes have very different scales
+            aspect="auto"
         )
         fig.colorbar(im, ax=ax)
 
