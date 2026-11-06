@@ -64,11 +64,12 @@ def color_code(code, value, mini=0, maxi=1):
 
 class Mapper:
 
-    def __init__(self, folder, two_vars, quantity):
+    def __init__(self, folder, two_vars, quantity, name=None):
         self.folder = folder
         self.var1 = two_vars[0]
         self.var2 = two_vars[1]
         self.quantity = quantity
+        self.name = name
 
         self.collect()
 
@@ -93,6 +94,8 @@ class Mapper:
         self.maxi = np.nanmax(self.data)
 
     def png_name(self):
+        if self.name != None:
+            return self.name + ".png"
         return "_".join([
             "img",
             self.quantity,
@@ -123,6 +126,11 @@ class Mapper:
     def to_plt(self, color_map="viridis", ax1=None, ax2=None, title=None, phases=None, constants=None):
 
         fig, ax = plt.subplots()
+
+        if self.name is not None:
+            manager = fig.canvas.manager
+            if manager is not None:
+                manager.set_window_title(self.name)
 
         x0, x1 = self.v1_set[0], self.v1_set[-1]
         y0, y1 = self.v2_set[0], self.v2_set[-1]

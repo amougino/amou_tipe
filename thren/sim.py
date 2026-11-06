@@ -83,10 +83,14 @@ def collision_events(settings, radius=1e6):
     return [hit1, hit2]
 
 
-def calculate(settings, timespan, method="DOP853", time_values=None):
+def calculate(settings, timespan, method=None, time_values=None, prec=None):
     '''
     returns the solved ordinary differential equation
     '''
+    if method is None:
+        method = "DOP853"
+    if prec is None:
+        prec = 1e-13
     vx, vy = to_bin_sys(settings)
     initial = [
         settings["sat_pos_x"],
@@ -104,9 +108,9 @@ def calculate(settings, timespan, method="DOP853", time_values=None):
         t_span=timespan,
         y0=initial,
         method=method,
-        rtol=1e-12, atol=1e-12,
+        rtol=prec, atol=prec,
         t_eval=time_values,
-        max_step=(2 * np.pi) / (1000*omega),
+        # max_step=(2 * np.pi) / (1000*omega),
         events=collision_events(settings, 1e6))
 
 

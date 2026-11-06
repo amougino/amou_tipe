@@ -58,7 +58,7 @@ def resolve_workers(workers):
     raise TypeError(f"workers must be None, int, float or str, got {type(workers).__name__}")
 
 
-def parallel_otf(settings_file, workers=None, chunksize=16):
+def parallel_otf(settings_file, workers=None, chunksize=16, method=None, prec=None):
     '''
     workers : number of logical cpus
     chunksize : number of cells sent to each worker at a time
@@ -104,9 +104,11 @@ def parallel_otf(settings_file, workers=None, chunksize=16):
 
     total = int(np.prod([len(g) for g in grids]))
     workers = resolve_workers(workers)
-    jobs = ((settings, names, combo) for combo in itertools.product(*grids))
+    jobs = ((settings, names, combo, method, prec) for combo in itertools.product(*grids))
 
     print(f"{total} cells on {workers}/{cpu_count()} workers -> {result_directory}")
+    print(f"chunksize : {chunksize}")
+    print(f"method : {method}")
     start = time.time()
 
     with Pool(workers) as pool, open(result_file, 'a') as f:
@@ -125,7 +127,7 @@ def _cell(args):
     '''
     simulates and analyses a single cell, returns one csv line
     '''
-    settings, names, combo = args
+    settings, names, combo, method, prec = args
     s = dict(settings)
     for name, value in zip(names, combo):
         s[name] = value
@@ -134,7 +136,7 @@ def _cell(args):
 
     try:
         timespan = (0, sim.end_time_approx(s))
-        simulation = sim.calculate(s, timespan)
+        simulation = sim.calculate(s, timespan, method=method, prec=prec)
         if simulation.status != 0:
             # -1 : solver failed
             # 1 : terminal event (ex: collision)

@@ -1,6 +1,5 @@
 import thren.sim as sim
 import numpy as np
-import matplotlib.pyplot as plt
 
 
 def trajectory_zoomed(solution, settings, distance):

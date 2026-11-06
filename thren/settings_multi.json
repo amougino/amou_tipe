@@ -14,13 +14,13 @@
             "name": "sat_vel_y",
             "start": 100,
             "stop": 1200,
-            "points": 200
+            "points": 50
         },
         {
             "name": "sat_pos_y",
             "start": -1e9,
             "stop": -4e9,
-            "points": 200
+            "points": 50
         }
     ]
 
