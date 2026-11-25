@@ -17,7 +17,9 @@ def parameters(m1, m2, r):
     returns parameters defining the movement of the two planets
     '''
     m = (m1 * m2) / (m1 + m2)
-    # omega = (2/r) * np.sqrt((G*m)/r) ##### testing different omega #####
+    # here r is the body distance, the radius of the "imaginary body" orbit
+    # wr = v = sqrt(G(m1+m2)/8R)
+    # dyson article : v = sqrt(GM/4R), with M the mass of a single body and R the radius
     omega = np.sqrt(G * (m1 + m2) / r**3)
     return (
         m,

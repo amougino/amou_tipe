@@ -1,0 +1,36 @@
+{
+    "constants": {
+        "mass1": 7.34767309e22,
+        "bin_sys_vel_x": 0,
+        "bin_sys_vel_y": 0,
+        "sat_pos_x": 0,
+        "sat_vel_x": 0
+    },
+    "variations": [
+        {
+            "name": "sat_vel_y",
+            "start": 100,
+            "stop": 1200,
+            "points": 1000
+        },
+        {
+            "name": "sat_pos_y",
+            "start": -1e9,
+            "stop": -4e9,
+            "points": 1000
+        },
+        {
+            "name": "mass2",
+            "start": 5e22,
+            "stop": 20e22,
+            "points": 12
+        },
+        {
+            "name": "body_distance",
+            "start" : 100e6,
+            "stop" : 200e6,
+            "points": 12
+        }
+    ]
+
+}

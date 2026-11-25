@@ -4,7 +4,7 @@
     "body_distance": 150000e3,
     "sat_pos_x": 0,
     "sat_pos_y" : -2000000000.0,
-    "sat_vel_x": 0,
+    "sat_vel_x": 15,
     "sat_vel_y" : 360,
     "bin_sys_vel_x": 0,
     "bin_sys_vel_y" : 0
